@@ -17,6 +17,22 @@ on property:ro.vendor.hw.dualsim=true
     setprop ro.vendor.radio.imei.sv 6
     setprop ro.telephony.default_network 10,0
 
+on property:ro.vendor.hw.ram=3GB
+    setprop dalvik.vm.heapstartsize 8m
+    setprop dalvik.vm.heapgrowthlimit 192m
+    setprop dalvik.vm.heapsize 512m
+    setprop dalvik.vm.heaptargetutilization 0.75
+    setprop dalvik.vm.heapminfree 512k
+    setprop dalvik.vm.heapmaxfree 8m
+
+on property:ro.vendor.hw.ram=2GB
+    setprop dalvik.vm.heapstartsize 8m
+    setprop dalvik.vm.heapgrowthlimit 128m
+    setprop dalvik.vm.heapsize 384m
+    setprop dalvik.vm.heaptargetutilization 0.75
+    setprop dalvik.vm.heapminfree 512k
+    setprop dalvik.vm.heapmaxfree 8m
+
 on boot
     #change permission for capsensor
     chmod 0660 /sys/class/capsense/enable
