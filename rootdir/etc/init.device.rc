@@ -1,0 +1,101 @@
+on init
+    setprop ro.vendor.hw.dualsim ${ro.boot.dualsim}
+    setprop ro.vendor.hw.radio ${ro.boot.radio}
+
+    # Change ownership for for HBM feature
+    chown system system /sys/class/graphics/fb0/hbm
+    # Change ownership for for cabc feature
+    chown system system /sys/class/graphics/fb0/cabc
+
+on property:ro.carrier=tmo
+    write /sys/class/power_supply/battery/device/force_max_chrg_temp 55
+
+on property:ro.carrier=metropcs
+    write /sys/class/power_supply/battery/device/force_max_chrg_temp 55
+
+on property:ro.vendor.hw.dualsim=true
+    setprop ro.vendor.radio.imei.sv 6
+    setprop ro.telephony.default_network 10,0
+
+on boot
+    #change permission for capsensor
+    chmod 0660 /sys/class/capsense/enable
+    chown system system sys/class/capsense/enable
+    chmod 0660 /sys/class/capsense/reset
+    chown system system sys/class/capsense/reset
+    chmod 0660 /sys/class/capsense/reg
+    chown system system sys/class/capsense/reg
+
+on property:sys.boot_completed=1
+    start vendor.capsense_reset
+
+service vendor.capsense_reset /vendor/bin/capsense_reset
+    class core
+    user system
+    group system
+    disabled
+
+service vendor.sensors.qti /vendor/bin/sensors.qti
+    class core
+    user system
+    group system
+    disabled
+
+service vendor.sensor-sh /vendor/bin/init.qcom.sensors.sh
+    class core
+    user root
+    oneshot
+
+on property:ro.boot.hardware.sku=XT1922-2
+    setprop ro.opengles.version 196610
+    setprop ro.boot.product.hardware.sku n
+    mount none /vendor/etc/audio_platform_info.xml /vendor/etc/audio_platform_info.xml bind
+    mount none /vendor/etc/mixer_paths.xml /vendor/etc/mixer_paths.xml bind
+    mount none /vendor/etc/thermal-engine-aljeter.conf /vendor/etc/thermal-engine.conf bind
+    mount none /vendor/etc/sensors/sensor_def_qcomdev.conf /vendor/etc/sensors/sensor_def_qcomdev.conf bind
+
+on property:ro.boot.hardware.sku=XT1922-3
+    setprop ro.opengles.version 196610
+
+on property:ro.boot.hardware.sku=XT1922-4
+    setprop ro.opengles.version 196610
+    mount none /vendor/etc/audio_platform_info.xml /vendor/etc/audio_platform_info.xml bind
+    mount none /vendor/etc/mixer_paths.xml /vendor/etc/mixer_paths.xml bind
+    mount none /vendor/etc/thermal-engine-aljeter.conf /vendor/etc/thermal-engine.conf bind
+    mount none /vendor/etc/sensors/sensor_def_qcomdev.conf /vendor/etc/sensors/sensor_def_qcomdev.conf bind
+
+on property:ro.boot.hardware.sku=XT1922-5
+    setprop ro.opengles.version 196610
+    mount none /vendor/etc/audio_platform_info.xml /vendor/etc/audio_platform_info.xml bind
+    mount none /vendor/etc/mixer_paths.xml /vendor/etc/mixer_paths.xml bind
+    mount none /vendor/etc/thermal-engine-aljeter.conf /vendor/etc/thermal-engine.conf bind
+    mount none /vendor/etc/sensors/sensor_def_qcomdev.conf /vendor/etc/sensors/sensor_def_qcomdev.conf bind
+
+on property:ro.boot.hardware.sku=XT1922-10
+    setprop ro.opengles.version 196610
+    mount none /vendor/etc/audio_platform_info.xml /vendor/etc/audio_platform_info.xml bind
+    mount none /vendor/etc/mixer_paths.xml /vendor/etc/mixer_paths.xml bind
+    mount none /vendor/etc/thermal-engine-aljeter.conf /vendor/etc/thermal-engine.conf bind
+    mount none /vendor/etc/sensors/sensor_def_qcomdev.conf /vendor/etc/sensors/sensor_def_qcomdev.conf bind
+
+on property:ro.boot.hardware.sku=XT1922-6
+    setprop ro.opengles.version 196608
+
+on property:ro.boot.hardware.sku=XT1922-7
+    setprop ro.opengles.version 196608
+
+on property:ro.boot.hardware.sku=XT1922-9
+    setprop ro.opengles.version 196608
+
+on boot && property:ro.boot.product.hardware.sku=n
+     start vendor.nfc_hal_service
+
+service vendor.nfc_hal_service /vendor/bin/hw/android.hardware.nfc@1.2-service
+     interface android.hardware.nfc@1.0::INfc default
+     interface android.hardware.nfc@1.1::INfc default
+     interface android.hardware.nfc@1.2::INfc default
+     override
+     class hal
+     user nfc
+     group nfc
+     disabled
